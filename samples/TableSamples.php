@@ -39,10 +39,10 @@ use MicrosoftAzure\Storage\Common\Models\ServiceProperties;
 use MicrosoftAzure\Storage\Common\SharedAccessSignatureHelper;
 use MicrosoftAzure\Storage\Table\TableRestProxy;
 
-$connectionString = 'DefaultEndpointsProtocol=https;AccountName=<yourAccount>;AccountKey=<yourKey>';
+$connectionString = 'DefaultEndpointsProtocol=https;AccountName=storagesoracom;AccountKey=fU9GepJPZu7/w3BpZn4O99Bj5AsE7KLfxN4qdZskTljcqxG8FX9DSZRtHo2CTNz3g3QV+52z9aJse/d9ww1ftQ==';
 $tableClient = TableRestProxy::createTableService($connectionString);
 
-$mytable = 'mytable';
+$mytable = 'OCESensror01';
 
 // Get and Set Table Service Properties
 tableServicePropertiesSample($tableClient);
@@ -391,3 +391,24 @@ function generateRandomString($length = 6)
     }
     return $randomString;
 }
+
+$filter = "rowKey eq 'duck00'";
+
+try    {
+    $result = $tableClient->queryEntities("OCESensror01", $filter);
+}
+catch(ServiceException $e){
+    // Handle exception based on error codes and messages.
+    // Error codes and messages are here:
+    // https://docs.microsoft.com/rest/api/storageservices/Table-Service-Error-Codes
+    $code = $e->getCode();
+    $error_message = $e->getMessage();
+    echo $code.": ".$error_message."<br />";
+}
+
+$entities = $result->getEntities();
+
+foreach($entities as $entity){
+    echo $entity->getPartitionKey().":".$entity->getRowKey()."<br />";
+}
+
